@@ -21,10 +21,10 @@ PRE_REFORM_QUARTERS_PER_MONTH = 15  # (45 / 12) * 4
 POST_REFORM_QUARTERS_PER_MONTH = 11  # (33 / 12) * 4
 GENERAL_MAX_QUARTERS = 720 * 4
 PRE_REFORM_MAX_QUARTERS = 1260 * 4  # 42 * 30 salary days
-SALARY_DIVISOR = 365
+CALCULATION_YEAR_DAYS = 365
 MIN_ANNUAL_SALARY = Decimal("0.01")
 MAX_ANNUAL_SALARY = Decimal("100000000.00")  # Technical input limit, not law.
-MAX_SALARY_INPUT_LENGTH = 128
+MAX_INPUT_CHARACTERS = 128
 
 
 @dataclass(frozen=True)
@@ -43,7 +43,7 @@ class CompensationResult:
     compensation_before_reform: Decimal
     compensation_after_reform: Decimal
     total_compensation: Decimal
-    salary_divisor: int
+    calculation_year_days: int
 
 
 def _months_of_service(start_date: datetime.date, end_date: datetime.date) -> int:
@@ -113,7 +113,7 @@ def _salary_in_cents(annual_salary: Decimal) -> int:
 def _rounded_compensation_cents(salary_cents: int, salary_day_quarters: int) -> int:
     """Round the exact positive rational amount using the HALF_UP rule."""
 
-    denominator = SALARY_DIVISOR * 4
+    denominator = CALCULATION_YEAR_DAYS * 4
     # Adding half the denominator before integer division implements HALF_UP.
     # No approximate daily salary is created, including at exact half-cents.
     return (salary_cents * salary_day_quarters + denominator // 2) // denominator
@@ -186,7 +186,7 @@ def calculate_compensation(
         compensation_before_reform=_decimal_from_hundredths(pre_cents),
         compensation_after_reform=_decimal_from_hundredths(post_cents),
         total_compensation=_decimal_from_hundredths(total_cents),
-        salary_divisor=SALARY_DIVISOR,
+        calculation_year_days=CALCULATION_YEAR_DAYS,
     )
 
 
@@ -206,9 +206,9 @@ def get_decimal_input(message: str) -> Decimal:
 
     while True:
         value_input = input(message).strip().replace(",", ".")
-        if len(value_input) > MAX_SALARY_INPUT_LENGTH:
+        if len(value_input) > MAX_INPUT_CHARACTERS:
             print(
-                f"Invalid number, enter at most {MAX_SALARY_INPUT_LENGTH} characters."
+                f"Invalid number, enter at most {MAX_INPUT_CHARACTERS} characters."
             )
             continue
         try:
@@ -257,7 +257,7 @@ def _run_console() -> None:
     print(f"From 12 February 2012: {result.compensation_after_reform:.2f}")
     print(f"TOTAL: {result.total_compensation:.2f}")
     print(
-        f"Salary divisor: {result.salary_divisor} days. "
+        f"Calculation divisor: {result.calculation_year_days} days. "
         "Educational estimate only; do not rely on it for legal or financial decisions."
     )
 

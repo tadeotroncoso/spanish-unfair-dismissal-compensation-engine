@@ -65,12 +65,12 @@ def test_reform_date_itself_uses_post_reform_rate():
     assert result.total_compensation == Decimal("275.00")
 
 
-def test_leap_year_still_uses_365_day_salary_divisor():
+def test_leap_year_still_uses_365_day_calculation_divisor():
     result = calculate_compensation(
         date(2020, 2, 1), date(2020, 2, 29), Decimal("36600")
     )
 
-    assert result.salary_divisor == 365
+    assert result.calculation_year_days == 365
     assert result.months_after_reform == 1
     assert result.total_compensation == Decimal("275.75")
 

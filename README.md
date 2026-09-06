@@ -39,7 +39,7 @@ COMPENSATION (EUR)
 Before 12 February 2012: 4500.00
 From 12 February 2012: 3300.00
 TOTAL: 7800.00
-Salary divisor: 365 days. Educational estimate only; do not rely on it for legal or financial decisions.
+Calculation divisor: 365 days. Educational estimate only; do not rely on it for legal or financial decisions.
 ```
 
 ## Formula and assumptions
